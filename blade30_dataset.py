@@ -3,7 +3,7 @@ import cv2
 import re
 
 class Blade30Dataset:
-    def __init__(self, dataset_dir = r"C:\Users\13694\Blade30" , subset: int = 1):
+    def __init__(self, dataset_dir = r"C:\Users\13694\Blade30" , subset: int = 1, read_img = False):
         dataset_dir = Path(dataset_dir)
 
         self.subset_dir:Path = dataset_dir / f"Blade_{subset}"
@@ -27,9 +27,8 @@ class Blade30Dataset:
         img_list.sort()
         for img_file in img_list:
             # Read image
-            img = cv2.imread(str(img_file))
-            if img is None:
-                raise FileNotFoundError(f"Could not read image: {img_file}")
+            if read_img: 
+                img = cv2.imread(str(img_file))
             
             # Read corresponding mask
             mask_file = self.mask_path / f"{img_file.stem}.png"
@@ -39,16 +38,17 @@ class Blade30Dataset:
             if resized_mask_file.exists():
                 resized_mask_file.unlink()
         
-            mask = cv2.imread(str(mask_file), cv2.IMREAD_GRAYSCALE)
+            if read_img: 
+                mask = cv2.imread(str(mask_file), cv2.IMREAD_GRAYSCALE)
             
-            mask = cv2.resize(mask, (img.shape[1], img.shape[0]))
-            _, mask = cv2.threshold(mask, 127, 255, cv2.THRESH_BINARY)
+                mask = cv2.resize(mask, (img.shape[1], img.shape[0]))
+                _, mask = cv2.threshold(mask, 127, 255, cv2.THRESH_BINARY)
             
-            # Check if mask shape matches image shape
-            if not resized_mask_file.exists():
-                cv2.imwrite( str(resized_mask_file) , mask)
-            if not colmap_mask_file.exists():
-                cv2.imwrite(str(colmap_mask_file), mask)
+                # Check if mask shape matches image shape
+                if not resized_mask_file.exists():
+                    cv2.imwrite( str(resized_mask_file) , mask)
+                if not colmap_mask_file.exists():
+                    cv2.imwrite(str(colmap_mask_file), mask)
 
             
             self.images.append(img_file.__str__())
