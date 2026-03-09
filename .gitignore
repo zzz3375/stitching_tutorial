@@ -7,5 +7,7 @@
 !figures/
 !docs/
 !imgs/
-!Stitching Tutorial.ipynb
+!StitchingSummary.ipynb
+!*.jpg
+!*.py
 !README.md
