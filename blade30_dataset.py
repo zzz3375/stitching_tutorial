@@ -44,9 +44,6 @@ class Blade30Dataset:
                 mask = cv2.resize(mask, (img.shape[1], img.shape[0]))
                 _, mask = cv2.threshold(mask, 127, 255, cv2.THRESH_BINARY)
             
-                # Check if mask shape matches image shape
-                if not resized_mask_file.exists():
-                    cv2.imwrite( str(resized_mask_file) , mask)
                 if not colmap_mask_file.exists():
                     cv2.imwrite(str(colmap_mask_file), mask)
 
@@ -59,7 +56,7 @@ class Blade30Dataset:
 
 if __name__ == '__main__':
     for subset in range(1,30+1):
-        blade = Blade30Dataset(subset=subset)
+        blade = Blade30Dataset(subset=subset, read_img=True)
         del blade
     pass
 
